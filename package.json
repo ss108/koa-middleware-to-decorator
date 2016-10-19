@@ -2,13 +2,16 @@
   "name": "koa-middleware-to-decorator",
   "version": "0.0.0",
   "description": "Converts Koa Middleware to Decorators that can be used to annotate endpoints for the same functionality. Currently just a way to practice/display skill with TypeScript, and not really meant for production (but you know, try it if you want and let me know how it goes).",
-  "keywords": ["koa", "middlware", "decorators"],
+  "keywords": [
+    "koa",
+    "middlware",
+    "decorators"
+  ],
   "scripts": {
     "clean": "rm -rf ./build",
     "build:dev": "npm run clean && ./node_modules/.bin/tsc",
-    "start": "node ./build/app.js",
-    "restart:dev": "npm run build:dev && npm start",
-    "watch": "npm-watch"
+    "start": "node ./build/index.js",
+    "restart:dev": "npm run build:dev && npm start"
   },
   "author": "Samier Saeed",
   "repository": {
