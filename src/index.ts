@@ -15,7 +15,7 @@ function toDecorator(middleware)  {
 }
 
 
-function testMiddleware1(options: any){
+function testMiddleware(options: any){
     return async (ctx: Koa.Context, next: Function) => {
         try {
             console.log(options.foo);
@@ -29,12 +29,21 @@ function testMiddleware1(options: any){
     }
 }
 
+function anotherOne(options?: any){
+    return async (ctx: Koa.Context, next: Function) => {
+        console.log("first");
+        await next();
+    }
+}
+
 const mockContext = <Koa.Context>{};
 
-const testDecorator1 = toDecorator(testMiddleware1({foo: true}));
+const testDecorator = toDecorator(testMiddleware({foo: true}));
+const anotherDecorator = toDecorator(anotherOne({}));
 
 class FakeController {
-    @testDecorator1
+    @testDecorator
+    @anotherDecorator
     async testEndpoint(ctx: Koa.Context): Promise<void> {
         console.log('oboy');
     }
