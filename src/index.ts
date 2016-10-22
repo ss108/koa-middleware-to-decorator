@@ -5,12 +5,18 @@ type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
 
 function toDecorator(middleware)  {
     return function(target: any, key: string | symbol, descriptor: any): void {
-        let action: koaControllerAction = target[key];
+        let action: koaControllerAction = descriptor.value; 
+        // console.log(action);
         let decorated = async (ctx: Koa.Context) => {
             await middleware(ctx, action);
         }
         
         descriptor.value = decorated;
+        descriptor.decoratorCount = descriptor.decoratorCount || 0;
+        descriptor.decoratorCount += 1;
+
+        // console.log(descriptor.decoratorCount);
+        // console.log(descriptor.value);
     } 
 }
 
@@ -42,8 +48,8 @@ const testDecorator = toDecorator(testMiddleware({foo: true}));
 const anotherDecorator = toDecorator(anotherOne({}));
 
 class FakeController {
-    @testDecorator
     @anotherDecorator
+    @testDecorator
     async testEndpoint(ctx: Koa.Context): Promise<void> {
         console.log('oboy');
     }
