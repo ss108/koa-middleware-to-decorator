@@ -18,9 +18,10 @@
     "type": "git",
     "url": "https://github.com/ss108/koa-middleware-to-decorator"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/node": "6.0.42",
     "koa": "^2.0.0",
     "typescript": "2.1.0-dev.20161009"
-  }
+  },
+  "dependencies": {}
 }
