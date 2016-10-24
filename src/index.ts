@@ -1,7 +1,7 @@
 import Koa from "koa";
 
-type middleware = (ctx: Koa.Context, next: Function) => Promise<void>;
-type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
+export type middleware = (ctx: Koa.Context, next: Function) => Promise<void>;
+export type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
 
 export function toDecorator(middleware)  {
     return function(target: any, key: string | symbol, descriptor: any): void {
