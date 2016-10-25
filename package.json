@@ -1,6 +1,6 @@
 {
   "name": "mw2dec",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Converts Koa Middleware to Decorators that can be used to annotate endpoints for the same functionality. Currently just a way to practice/display skill with TypeScript, and not really meant for production (but you know, try it if you want and let me know how it goes).",
   "keywords": [
     "koa",
