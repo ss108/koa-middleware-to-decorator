@@ -8,7 +8,7 @@ export function toDecorator(middleware)  {
         let action: koaControllerAction = descriptor.value; 
 
         let decorated = async (ctx: Koa.Context) => {
-            await middleware(ctx, action);
+            await middleware(ctx, action.bind(null, ctx));
         }
         
         descriptor.value = decorated;
