@@ -6,6 +6,13 @@ export type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
 export type jsDecorator = (target: any, key: string | symbol, descriptor: any) => void;
 export type decoratorFactory = (options: any) => jsDecorator;
 
+function _decorateClass(target){
+    let keys: PropertyKey[] = Reflect.ownKeys(target).filter((k) => {
+       return k !== "constructor"; 
+    });
+
+}
+
 export function toOptionedDecorator(middleware): jsDecorator {
     return function (target: any, key: string | symbol, descriptor: any): void {
         let action: koaControllerAction = descriptor.value;
