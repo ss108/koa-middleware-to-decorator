@@ -13,6 +13,10 @@ function _decorateClass(target){
 
 }
 
+function _decorateMethod(){
+    
+}
+
 export function toOptionedDecorator(middleware): jsDecorator {
     return function (target: any, key: string | symbol, descriptor: any): void {
         let action: koaControllerAction = descriptor.value;
