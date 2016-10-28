@@ -29,7 +29,7 @@ export function toOptionedDecorator(middleware): jsDecorator {
     }
 }
 
-function toDecorator(factory: middlewareFactory): decoratorFactory {
+export function toDecorator(factory: middlewareFactory): decoratorFactory {
     return function (options: any) {
         let middleware = factory(options);
         return function (target: any, key: string | symbol, descriptor: any): void {
