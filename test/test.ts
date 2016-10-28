@@ -1,5 +1,11 @@
 import { Expect, Test } from "alsatian";
 
+// import
+
+function fakeMiddlewareFactory(options: any){
+
+}
+
 export class ExampleTestFixture {
 
   @Test()
