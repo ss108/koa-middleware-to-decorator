@@ -50,4 +50,3 @@ export function toDecorator(factory: middlewareFactory): decoratorFactory {
     }
 }
 
-
