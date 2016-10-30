@@ -13,7 +13,7 @@
     "build": "npm run clean && ./node_modules/.bin/tsc",
     "start": "node ./build/index.js",
     "restart": "npm run build && npm start",
-    "test": "node ./build/test/hackyTests.js",
+    "test": "alsatian \"./build/test/*.js\"",
     "build+test": "npm run build && npm test"
   },
   "author": "Samier Saeed",

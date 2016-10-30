@@ -3,7 +3,7 @@ import Koa from "koa";
 export type middleware = (ctx: Koa.Context, next: Function) => Promise<void>;
 export type middlewareFactory = (options: any) => middleware;
 export type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
-export type jsDecorator = (target: any, key: string | symbol, descriptor: any) => void;
+export type jsDecorator = (target: any, key: PropertyKey, descriptor: PropertyDescriptor) => void;
 export type decoratorFactory = (options: any) => jsDecorator;
 
 function _isClass(target: any): boolean {
@@ -31,7 +31,7 @@ function _decorateMethod(mw: middleware, target: any, key: PropertyKey, descript
     descriptor.value = decorated;
 }
 
-export function toOptionedDecorator(middleware): jsDecorator {
+export function toOptionedDecorator(middleware: middleware): jsDecorator {
     return function (target: any, key?: PropertyKey, descriptor?: PropertyDescriptor): void {
         if (!key && !descriptor) {
             _decorateClass(target, middleware);
