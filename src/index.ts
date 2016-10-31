@@ -7,13 +7,16 @@ export type jsDecorator = (target: any, key?: PropertyKey, descriptor?: Property
 export type decoratorFactory = (options: any) => jsDecorator;
 
 function _decorateClass(target: any, mw: middleware) {
-    let keys: PropertyKey[] = Reflect.ownKeys(target).filter((k) => {
+    let keys: PropertyKey[] = Reflect.ownKeys(target.prototype).filter((k) => {
         return k !== "constructor";
     });
 
+    console.log(keys);
+
     keys.forEach((k) => {
-        let descriptor: PropertyDescriptor = Object.getOwnPropertyDescriptor(target, k);
-        _decorateMethod(mw, target, k, descriptor);
+        console.log(k);
+        let descriptor: PropertyDescriptor = Object.getOwnPropertyDescriptor(target.prototype, k);
+        _decorateMethod(mw, target.prototype, k, descriptor);
     });
 }
 
