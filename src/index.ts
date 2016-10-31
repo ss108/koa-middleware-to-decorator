@@ -3,12 +3,8 @@ import Koa from "koa";
 export type middleware = (ctx: Koa.Context, next: Function) => Promise<void>;
 export type middlewareFactory = (options: any) => middleware;
 export type koaControllerAction = (ctx: Koa.Context) => Promise<any>;
-export type jsDecorator = (target: any, key: PropertyKey, descriptor: PropertyDescriptor) => void;
+export type jsDecorator = (target: any, key?: PropertyKey, descriptor?: PropertyDescriptor) => void;
 export type decoratorFactory = (options: any) => jsDecorator;
-
-function _isClass(target: any): boolean {
-    return (typeof target !== "function");
-}
 
 function _decorateClass(target: any, mw: middleware) {
     let keys: PropertyKey[] = Reflect.ownKeys(target).filter((k) => {
