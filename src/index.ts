@@ -30,7 +30,7 @@ function _decorateMethod(mw: middleware, target: any, key: PropertyKey, descript
     descriptor.value = decorated;
 }
 
-export function toOptionedDecorator(middleware: middleware): jsDecorator {
+export function toStaticDecorator(middleware: middleware): jsDecorator {
     return function (target: any, key?: PropertyKey, descriptor?: PropertyDescriptor): void {
         if (!key && !descriptor) {
             _decorateClass(target, middleware);
@@ -42,10 +42,10 @@ export function toOptionedDecorator(middleware: middleware): jsDecorator {
     }
 }
 
-export function toDecorator(factory: middlewareFactory): decoratorFactory {
+export function toDynamicDecorator(factory: middlewareFactory): decoratorFactory {
     return function (options: any) {
         let middleware = factory(options);
-        return toOptionedDecorator(middleware);
+        return toStaticDecorator(middleware);
     }
 }
 

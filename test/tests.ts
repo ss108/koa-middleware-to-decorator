@@ -1,8 +1,7 @@
 import { Expect, AsyncTest } from "alsatian";
 import * as lib from "../src";
 
-
-const testMwFac1 = (options?: any) => {
+const applyBar = (options?: any) => {
     return async function (ctx, next) {
         ctx.foo = "bar";
         await next();
@@ -28,12 +27,12 @@ const testClassMw = (options?: any) => {
     }
 }
 
-const mw1 = lib.toDecorator(testMwFac1);
-const mw2 = lib.toDecorator(testMwFac2);
-const dynClassMw = lib.toDecorator(testClassMw);
+const dynamicBar = lib.toDynamicDecorator(applyBar);
+const mw2 = lib.toDynamicDecorator(testMwFac2);
+const dynClassMw = lib.toDynamicDecorator(testClassMw);
 
-const mw3 = lib.toOptionedDecorator(testMwFac1({}));
-const mw4 = lib.toOptionedDecorator(testMwFac2({ isCool: true }));
+const mw3 = lib.toStaticDecorator(applyBar({}));
+const mw4 = lib.toStaticDecorator(testMwFac2({ isCool: true }));
 
 @dynClassMw({})
 class TestDynamic {
@@ -42,27 +41,27 @@ class TestDynamic {
         return {};
     }
 
-    @mw1({})
+    @dynamicBar({})
     getSomething(ctx) {
         ctx.body = "hi";
     }
 
-    @mw1({})
+    @dynamicBar({})
     @mw2({ isCool: false })
     getSomethingElse(ctx) {
         ctx.body = "stuff";
     }
 
-    // @mw3
-    // someOtherEndpoint(ctx) {
-    //     ctx.body = "some other endpoint";
-    // }
+    @mw3
+    someOtherEndpoint(ctx) {
+        ctx.body = "some other endpoint";
+    }
 
-    // @mw3
-    // @mw4
-    // yetEvenAnotherAdditionalEndpoint(ctx) {
-    //     ctx.body = "#somanyendpoint";
-    // }
+    @mw3
+    @mw4
+    yetEvenAnotherAdditionalEndpoint(ctx) {
+        ctx.body = "#somanyendpoint";
+    }
 }
 
 export class DynamicOptionTests {
@@ -103,7 +102,7 @@ export class DynamicOptionTests {
         let instance = new TestDynamic();
         let ctx: any = {};
         await instance.getSomething(ctx);
-        // Expect(ctx.user).toEqual({username: "bogus", role: 1});
+        Expect(ctx.user).toEqual({username: "bogus", role: 1});
     }
 }
 
