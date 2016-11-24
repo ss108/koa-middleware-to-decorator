@@ -1,4 +1,4 @@
-import { Expect, AsyncTest } from "alsatian";
+import { Expect, AsyncTest, FocusTest} from "alsatian";
 import * as lib from "../src";
 
 const applyBar = (options?: any) => {
@@ -8,7 +8,7 @@ const applyBar = (options?: any) => {
     }
 }
 
-const testMwFac2 = (options: { isCool: boolean }) => {
+const negateBar = (options: { isCool: boolean }) => {
     return async function (ctx, next) {
         ctx.foo = "not bar";
         ctx.isCool = options.isCool;
@@ -16,11 +16,11 @@ const testMwFac2 = (options: { isCool: boolean }) => {
     }
 }
 
-const testClassMw = (options?: any) => {
+const testClassMw = (options: {role: number}) => {
     return async function (ctx, next) {
         ctx.user = {
             username: "bogus",
-            role: 1
+            role: options.role 
         }
 
         await next();
@@ -28,48 +28,47 @@ const testClassMw = (options?: any) => {
 }
 
 const dynamicBar = lib.toDynamicDecorator(applyBar);
-const mw2 = lib.toDynamicDecorator(testMwFac2);
+const dynamicNegateBar = lib.toDynamicDecorator(negateBar);
 const dynClassMw = lib.toDynamicDecorator(testClassMw);
 
-const mw3 = lib.toStaticDecorator(applyBar({}));
-const mw4 = lib.toStaticDecorator(testMwFac2({ isCool: true }));
+const staticBar = lib.toStaticDecorator(applyBar({}));
+const staticNegateBar = lib.toStaticDecorator(negateBar({ isCool: true }));
+const staticClassMw = lib.toStaticDecorator(testClassMw({role: 3}));
 
-@dynClassMw({})
+@dynClassMw({role: 1})
 class TestDynamic {
 
-    private _someLogic(id: number) {
-        return {};
-    }
+    // private _someLogic(id: number) {
+    //     return {};
+    // }
 
-    @dynamicBar({})
-    getSomething(ctx) {
+    // @dynamicBar({})
+    async expectBar(ctx) {
         ctx.body = "hi";
     }
 
-    @dynamicBar({})
-    @mw2({ isCool: false })
-    getSomethingElse(ctx) {
+    // @dynamicBar({})
+    // @dynamicNegateBar({ isCool: false })
+    async expectNotBar(ctx) {
         ctx.body = "stuff";
     }
-
-    @mw3
-    someOtherEndpoint(ctx) {
-        ctx.body = "some other endpoint";
-    }
-
-    @mw3
-    @mw4
-    yetEvenAnotherAdditionalEndpoint(ctx) {
-        ctx.body = "#somanyendpoint";
-    }
 }
+
+// @staticClassMw
+// class TestStatic {
+
+//     @staticBar
+//     async expectBar(ctx) {
+//         ctx.body = "hi";
+//     }
+// }
 
 export class DynamicOptionTests {
     @AsyncTest()
     async testSingleOnMethod() {
         let instance = new TestDynamic();
         let ctx: any = {};
-        await instance.getSomething(ctx);
+        await instance.expectBar(ctx);
         Expect(ctx.foo).toBe("bar");
     }
 
@@ -77,7 +76,7 @@ export class DynamicOptionTests {
     async testMultiOnMethod() {
         let instance = new TestDynamic();
         let ctx: any = {};
-        await instance.getSomethingElse(ctx);
+        await instance.expectNotBar(ctx);
         Expect(ctx.foo).toBe("not bar");
     }
 
@@ -85,7 +84,7 @@ export class DynamicOptionTests {
     async testOptions() {
         let instance = new TestDynamic();
         let ctx: any = {};
-        await instance.getSomethingElse(ctx);
+        await instance.expectNotBar(ctx);
         Expect(ctx.isCool).toBe(false);
     }
 
@@ -93,15 +92,16 @@ export class DynamicOptionTests {
     async testCtrlActionExpectation() {
         let instance = new TestDynamic();
         let ctx: any = {};
-        await instance.getSomething(ctx);
+        await instance.expectBar(ctx);
         Expect(ctx.body).toBe("hi");
     }
 
+    @FocusTest
     @AsyncTest()
     async testClassDecoration() {
         let instance = new TestDynamic();
         let ctx: any = {};
-        await instance.getSomething(ctx);
+        await instance.expectBar(ctx);
         Expect(ctx.user).toEqual({username: "bogus", role: 1});
     }
 }
@@ -109,34 +109,11 @@ export class DynamicOptionTests {
 // export class StaticOptionTests {
 //     @AsyncTest()
 //     async testSingleOnMethod() {
-//         let instance = new TestClassMethod();
+//         let instance = new TestStatic();
 //         let ctx: any = {};
-//         await instance.someOtherEndpoint(ctx);
+//         await instance.expectBar(ctx);
 //         Expect(ctx.foo).toBe("bar");
 //     }
 
-//     @AsyncTest()
-//     async testMultiOnMethod() {
-//         let instance = new TestClassMethod();
-//         let ctx: any = {};
-//         await instance.yetEvenAnotherAdditionalEndpoint(ctx);
-//         Expect(ctx.foo).toBe("not bar");
-//     }
-
-//     @AsyncTest()
-//     async testOptions() {
-//         let instance = new TestClassMethod();
-//         let ctx: any = {};
-//         await instance.yetEvenAnotherAdditionalEndpoint(ctx);
-//         Expect(ctx.isCool).toBe(true);
-//     }
-
-//     @AsyncTest()
-//     async testCtrlActionExpectation() {
-//         let instance = new TestClassMethod();
-//         let ctx: any = {};
-//         await instance.yetEvenAnotherAdditionalEndpoint(ctx);
-//         Expect(ctx.body).toBe("#somanyendpoint");
-//     }
 // }
 

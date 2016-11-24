@@ -13,11 +13,21 @@ function _decorateClass(target: any, mw: middleware) {
 
     console.log(keys);
 
-    keys.forEach((k) => {
+    // keys.forEach((k) => {
+    //     console.log(k);
+    //     let descriptor: PropertyDescriptor = Object.getOwnPropertyDescriptor(target.prototype, k);
+    //     // console.log(descriptor);
+    //     // console.log(target.prototype);
+    //     _decorateMethod(mw, target.prototype, k, descriptor);
+    // });
+
+    for (let k of keys) {
         console.log(k);
         let descriptor: PropertyDescriptor = Object.getOwnPropertyDescriptor(target.prototype, k);
+        // console.log(descriptor);
+        // console.log(target.prototype);
         _decorateMethod(mw, target.prototype, k, descriptor);
-    });
+    }
 }
 
 function _decorateMethod(mw: middleware, target: any, key: PropertyKey, descriptor: PropertyDescriptor) {
